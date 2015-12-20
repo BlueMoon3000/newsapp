@@ -1,0 +1,14 @@
+{
+    "nytimes": {
+        "article": {
+            "url": "http://api.nytimes.com/svc/search/v2/articlesearch.json",
+            "query": {
+                "q": "",
+                "begin_date": null,
+                "end_date": null,
+                "sort": null,
+                "api-key": "23b667a23cd6d83281a71cc6a5cc095f:19:67507947"              
+            }
+        }
+    }
+}

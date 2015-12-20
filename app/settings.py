@@ -13,6 +13,16 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
+DEVELOPMENT = False
+STAGING = False
+if 'DEV_ENV' in os.environ:
+    if os.environ['DEV_ENV'] == 'heroku':
+        STAGING = True
+        ENVIRONMENT = 'staging'
+else:
+    DEVELOPMENT = True
+    ENVIRONMENT = 'dev'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -36,6 +46,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'south',
+    'core'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -52,15 +64,30 @@ ROOT_URLCONF = 'app.urls'
 WSGI_APPLICATION = 'app.wsgi.application'
 
 
+# Custom User Class
+AUTH_USER_MODEL = 'core.AppUser'
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if DEVELOPMENT:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'news',                      
+            'USER': 'admin',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',
+            'PORT': 5432
+        }
     }
-}
+elif STAGING:
+    import dj_database_url
+    # This automatically retrieves the Heroku PostgreSQL URL!?
+    DATABASES = {}
+    DATABASES['default'] =  dj_database_url.config()
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
